@@ -7,11 +7,15 @@ from config import *
 class Game:
     # Método construtor que inicia a classe. Adicionamos os grupos de sprites aqui.
     def __init__(self):
-        pass
+        # Criando uma instância da classe Player e adicionando no seu grupo de sprite.
+        player_sprite = Player((screen_width / 2, screen_height))
+        self.player = pygame.sprite.GroupSingle(player_sprite)
 
     # Método que desenha e atualiza todos os grupos de sprites.
     def run(self):
-        pass
+        # Desenhando o sprite do jogador na tela e o atualizando.
+        self.player.draw(screen)
+        self.player.update()
 
 
 
