@@ -1,3 +1,7 @@
+"""
+A construção desse jogo tem como referência o vídeo abaixo:
+Creating Space Invaders in Pygame/Python. Disponível em: <https://www.youtube.com/watch?v=o-6pADy5Mdg>. 
+"""
 import pygame
 import sys
 from sprites import *
@@ -13,9 +17,13 @@ class Game:
 
     # Método que desenha e atualiza todos os grupos de sprites.
     def run(self):
-        # Desenhando o sprite do jogador na tela e o atualizando.
+        # Desenhando o sprite do jogador na tela.
         self.player.draw(screen)
+        # Desenhando o sprite dos lasers.
+        self.player.sprite.laser.draw(screen)
+        # Atualizando os sprites.
         self.player.update()
+        
 
 
 

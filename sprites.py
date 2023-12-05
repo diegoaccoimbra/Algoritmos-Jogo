@@ -1,6 +1,4 @@
-from typing import Any
 import pygame
-from sprites import *
 from config import *
 
 # Criando a classe do nosso player.
@@ -12,7 +10,13 @@ class Player(pygame.sprite.Sprite):
         # Posicionando o sprite na tela com base na posição passada como parâmetro quando a classe for iniciada.
         self.rect = self.image.get_rect(midbottom = pos)
         # Velocidade com que o sprite vai se mover.
-        self.speed = 5
+        self.speed = player_speed
+        # Variáveis para fazer o player atirar o laser somente uma vez ao pressionar o botão de espaço.
+        self.ready = True
+        self.laser_time = 0
+        self.laser_recharged_time = recharge_time
+        # Adicionando uma variável que vai armazenar o sprite do laser.
+        self.laser = pygame.sprite.Group()
         
     # Método que pega as entradas do usuário, no caso aqui as teclas pressionadas.    
     def get_input(self):
@@ -26,6 +30,53 @@ class Player(pygame.sprite.Sprite):
         elif keys[pygame.K_LEFT] and self.rect.left > 0:
             self.rect.x = self.rect.x - self.speed
     
+        # Teste se o botão se espaço está pressionado para atirar o laser.
+        if keys[pygame.K_SPACE] and self.ready:
+            self.shoot_laser()
+            # Mudando o estado de pronto pra ter um intervalo de tiros.
+            self.ready = False
+            # Marca o tempo do tiro.
+            self.laser_time = pygame.time.get_ticks()
+
+    # Método que faz o sprite atirar o laser.
+    def shoot_laser(self):
+        print("shoot laser")
+        # Criando uma instância da classe Laser toda vez que o laser é disparado.
+        self.laser.add(Laser(self.rect.center))
+
+    # Método de recarga do laser.
+    def recharge_laser(self):
+        if not self.ready:
+            # Verifica o tempo atual e subtrai pelo tempo do tiro anterior pra saber se já se passou o tempo necessário de recarga do laser.
+            current_time = pygame.time.get_ticks()
+            if current_time - self.laser_time >= self.laser_recharged_time:
+                self.ready = True
+
     # Método que atualiza o sprite com bases nas teclas pressionadas.
     def update(self):
         self.get_input()
+        self.recharge_laser()
+        self.laser.update()
+
+# Criando a classe do laser.
+class Laser(pygame.sprite.Sprite):
+    def __init__(self, pos):
+        super().__init__()
+        # Criando o sprite do laser.
+        self.image = pygame.Surface((laser_width, laser_height))
+        self.image.fill(laser_color)
+        # Posicionando o centro em uma dada posição.
+        self.rect = self.image.get_rect(center = pos)
+        # Definindo a velocidade do laser.
+        self.speed = laser_speed
+
+    # Método para excluir os lasers assim que eles saem da tela.
+    def delete(self):
+        if self.rect.y >= screen_height:
+            self.kill()
+
+    # Atualizando a posição do laser no eixo y, pra fazer o sprite se movimentar.
+    def update(self):
+        self.rect.y = self.rect.y - self.speed
+        self.delete()
+        
