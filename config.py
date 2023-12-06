@@ -11,6 +11,7 @@ player_speed = 5
 laser_width = 4
 laser_height = 20
 laser_color = "green"
+enemy_laser_color = "red"
 laser_speed = 10
 recharge_time = 500
 

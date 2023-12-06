@@ -6,6 +6,7 @@ import pygame
 import sys
 from sprites import *
 from config import *
+from random import choice
 
 # Classe que contém toda a lógica do jogo.
 class Game:
@@ -19,6 +20,10 @@ class Game:
         self.enemy = pygame.sprite.Group()
         # Chamando a função pra posicionar os inimigos
         self.enemy_position(rows_number, cols_number)
+        # Velocidade de movimento dos inimigos.
+        self.enemy_speed =  enemy_speed
+        # Grupo de sprites do laser dos inimigos.
+        self.enemy_laser = pygame.sprite.Group()
 
     # Método que posiciona os inimigos em determinada posição.
     def enemy_position(self, rows, cols, x_distance = 60, y_distance = 48, window_distance = 20):
@@ -49,17 +54,46 @@ class Game:
                 # Adicionando ao grupo de sprites.
                 self.enemy.add(enemy_sprite)
 
+    # Método para movimentar os inimigos na tela.
+    def enemies_movement(self):
+        # Verifica se qualquer um dos inimigos atingiu o limite da tela, pra assim movimentar todos.
+        all_enemies = self.enemy.sprites()
+        for enemy in all_enemies:
+            if enemy.rect.right >= screen_width:
+                self.enemy_speed = -1
+
+            elif enemy.rect.left <= 0:
+                self.enemy_speed = 1
+
+    # Método para os inimigos atirar o laser.
+    def enemies_shoot(self):
+        # Só ocorre se houver inimigos no grupo de sprites.
+        if self.enemy.sprites():
+            # Selecionando um inimigo aleatório de todos os inimigos pra atirar.
+            random_enemy = choice(self.enemy.sprites())
+            # Instância da classe Laser pro inimigo.
+            laser_sprite = Laser(random_enemy.rect.center)
+            laser_sprite.image.fill(enemy_laser_color)   
+            laser_sprite.speed = -laser_speed
+            self.enemy_laser.add(laser_sprite)      
+
+
     # Método que desenha e atualiza todos os grupos de sprites.
     def run(self):
         # Desenhando o sprite do jogador na tela.
         self.player.draw(screen)
         # Desenhando o sprite dos lasers.
         self.player.sprite.laser.draw(screen)
+        self.enemy_laser.draw(screen)
         # Desenhando os sprites dos inimigos.        
         self.enemy.draw(screen)
         # Atualizando os sprites.
         self.player.update()
-        self.enemy.update()
+        self.enemy.update(self.enemy_speed)
+        self.enemies_movement()
+        self.enemy_laser.update()
+        
+
 
 
 # Iniciando o pygame.
@@ -74,12 +108,18 @@ if __name__ == "__main__":
     # Imagem de fundo do jogo.
     background = pygame.image.load(background_image).convert_alpha()
 
+    # Timer dos tiros dos lasers dos inimigos.
+    enemylaser = pygame.USEREVENT + 1
+    pygame.time.set_timer(enemylaser, 700)
+
     # Loop do jogo que é encerrado quando é fechado.
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+            if event.type == enemylaser:
+                game.enemies_shoot()
         
         # Desenhando o fundo com uma cor e adicionando a imagem de fundo.
         screen.fill((30, 30, 30))

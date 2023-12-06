@@ -72,7 +72,7 @@ class Laser(pygame.sprite.Sprite):
 
     # Método para excluir os lasers assim que eles saem da tela.
     def delete(self):
-        if self.rect.y >= screen_height:
+        if self.rect.y >= screen_height or self.rect.y < 0:
             self.kill()
 
     # Atualizando a posição do laser no eixo y, pra fazer o sprite se movimentar.
@@ -90,8 +90,7 @@ class Enemy(pygame.sprite.Sprite):
         self.image = pygame.image.load(enemy_image).convert_alpha()
         # Posicionando o sprite na tela com base na posição passada como parâmetro quando a classe for iniciada.
         self.rect = self.image.get_rect(topleft = pos)
-        # Velocidade que o inimigo se move.
-        self.speed = enemy_speed
 
-    def update(self):
-        self.rect.x = self.rect.x + self.speed
+    # Método que atualiza o movimento do inimigo ao longo do eixo x.
+    def update(self, speed):
+        self.rect.x = self.rect.x + speed
