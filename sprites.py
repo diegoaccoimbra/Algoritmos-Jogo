@@ -1,3 +1,4 @@
+from typing import Any
 import pygame
 from config import *
 
@@ -6,7 +7,7 @@ class Player(pygame.sprite.Sprite):
     def __init__(self, pos):
         super().__init__()
         # Importando o sprite do player.
-        self.image = pygame.image.load("img/player.png").convert_alpha()
+        self.image = pygame.image.load(player_image).convert_alpha()
         # Posicionando o sprite na tela com base na posição passada como parâmetro quando a classe for iniciada.
         self.rect = self.image.get_rect(midbottom = pos)
         # Velocidade com que o sprite vai se mover.
@@ -40,7 +41,6 @@ class Player(pygame.sprite.Sprite):
 
     # Método que faz o sprite atirar o laser.
     def shoot_laser(self):
-        print("shoot laser")
         # Criando uma instância da classe Laser toda vez que o laser é disparado.
         self.laser.add(Laser(self.rect.center))
 
@@ -80,3 +80,18 @@ class Laser(pygame.sprite.Sprite):
         self.rect.y = self.rect.y - self.speed
         self.delete()
         
+# Criando a classe dos inimigos:
+class Enemy(pygame.sprite.Sprite):
+    def __init__(self, pos, color):
+        super().__init__()
+        # Especificando a imagem do sprite de acordo com a cor passada.
+        enemy_image = "img/" + color + "_enemy" + ".png"
+        # Importando o sprite do enemy.
+        self.image = pygame.image.load(enemy_image).convert_alpha()
+        # Posicionando o sprite na tela com base na posição passada como parâmetro quando a classe for iniciada.
+        self.rect = self.image.get_rect(topleft = pos)
+        # Velocidade que o inimigo se move.
+        self.speed = enemy_speed
+
+    def update(self):
+        self.rect.x = self.rect.x + self.speed
