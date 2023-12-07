@@ -13,8 +13,13 @@ class Game:
     # Método construtor que inicia a classe. Adicionamos os grupos de sprites aqui.
     def __init__(self):
         # Criando uma instância da classe Player e adicionando no seu grupo de sprite.
-        player_sprite = Player((screen_width / 2, screen_height))
+        player_sprite = Player(player_position)
         self.player = pygame.sprite.GroupSingle(player_sprite)
+
+        # Sistema de vidas do player.
+        self.lives = player_lives
+        self.lives_img = pygame.image.load(player_lives_image).convert_alpha()
+        self.lives_position = screen_width - (self.lives_img.get_size()[0] * 2 + 15)
 
         # Criando um grupo de sprite pras instâncias da classe Enemy.
         self.enemy = pygame.sprite.Group()
@@ -25,8 +30,12 @@ class Game:
         # Grupo de sprites do laser dos inimigos.
         self.enemy_laser = pygame.sprite.Group()
 
+        # Fonte que vai ser usada na tela de fim de jogo.
+        #self.font = pygame.font.Font(pygame.font.get_default_font(), 50)
+        self.font = pygame.font.Font("font/Bungee-Regular.ttf", 32)
+
     # Método que posiciona os inimigos em determinada posição.
-    def enemy_position(self, rows, cols, x_distance = 60, y_distance = 48, window_distance = 20):
+    def enemy_position(self, rows, cols, x_distance = 60, y_distance = 50, window_distance = 40):
         for row_index in range(rows):
             for col_index in range(cols):
                 # Incremento dos index com a distância necessária pra separar os sprites
@@ -74,9 +83,42 @@ class Game:
             # Instância da classe Laser pro inimigo.
             laser_sprite = Laser(random_enemy.rect.center)
             laser_sprite.image.fill(enemy_laser_color)   
-            laser_sprite.speed = -laser_speed
+            laser_sprite.speed = - laser_speed
             self.enemy_laser.add(laser_sprite)      
 
+    # Método para verificar se um alvo recebeu o tiro.
+    def shoot_check(self):
+        # Lasers do player.
+        # Checa se cada laser do grupo de sprites dos lasers atingiu algum inimigo, fazendo o sprite do inimigo e do laser sumirem.
+        if self.player.sprite.laser:
+            for laser in self.player.sprite.laser:
+                if pygame.sprite.spritecollide(laser, self.enemy, True):
+                    laser.kill()
+
+        # Lasers dos inimigos
+        if self.enemy_laser:
+            # Checa se o laser de algum inimigo atingiu o player e diminui o número de vidas.
+            for laser in self.enemy_laser:
+                if pygame.sprite.spritecollide(laser, self.player, False):
+                    laser.kill()
+                    self.lives = self.lives - 1
+                    if self.lives == 0:
+                        pygame.quit()
+                        sys.exit()
+
+    # Método pra mostrar as vidas restantes na tela.
+    def display_lives(self):
+        for live in range(self.lives - 1):
+            position = (self.lives_position + (live * (self.lives_img.get_size()[0] + 10)), 5)
+            screen.blit(self.lives_img, position)
+
+    def game_over(self):
+        if not self.enemy.sprites():
+            victory_message = self.font.render("VOCÊ VENCEU!", False, "white")
+            victory_rect = victory_message.get_rect(center = (screen_width/2, screen_height/2))
+            screen.blit(victory_message, victory_rect)
+        #elif self.lives == 0:
+            #print("Você perdeu")
 
     # Método que desenha e atualiza todos os grupos de sprites.
     def run(self):
@@ -87,14 +129,18 @@ class Game:
         self.enemy_laser.draw(screen)
         # Desenhando os sprites dos inimigos.        
         self.enemy.draw(screen)
+        # Método que checa se o laser atingiu.
+        self.shoot_check()
+        # Método que mostra as vidas na tela.
+        self.display_lives()
+        # Método que mostra a tela de fim de jogo.
+        self.game_over()
         # Atualizando os sprites.
         self.player.update()
         self.enemy.update(self.enemy_speed)
         self.enemies_movement()
         self.enemy_laser.update()
         
-
-
 
 # Iniciando o pygame.
 if __name__ == "__main__":

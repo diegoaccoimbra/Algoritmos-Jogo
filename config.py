@@ -5,14 +5,17 @@ background_image = "img/background.jpg"
 
 # Configurações do Player.
 player_image = "img/player.png"
+player_position = (screen_width / 2, screen_height)
 player_speed = 5
+player_lives = 3
+player_lives_image = "img/heart.png"
 
 # Configurações do Laser.
 laser_width = 4
 laser_height = 20
 laser_color = "green"
 enemy_laser_color = "red"
-laser_speed = 10
+laser_speed = 8
 recharge_time = 500
 
 # Configurações do Enemy.

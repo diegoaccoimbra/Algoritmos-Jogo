@@ -2,7 +2,7 @@ from typing import Any
 import pygame
 from config import *
 
-# Criando a classe do nosso player.
+# Classe do player.
 class Player(pygame.sprite.Sprite):
     def __init__(self, pos):
         super().__init__()
@@ -58,7 +58,7 @@ class Player(pygame.sprite.Sprite):
         self.recharge_laser()
         self.laser.update()
 
-# Criando a classe do laser.
+# Classe do laser.
 class Laser(pygame.sprite.Sprite):
     def __init__(self, pos):
         super().__init__()
@@ -80,7 +80,7 @@ class Laser(pygame.sprite.Sprite):
         self.rect.y = self.rect.y - self.speed
         self.delete()
         
-# Criando a classe dos inimigos:
+# Classe dos inimigos:
 class Enemy(pygame.sprite.Sprite):
     def __init__(self, pos, color):
         super().__init__()
@@ -94,3 +94,8 @@ class Enemy(pygame.sprite.Sprite):
     # Método que atualiza o movimento do inimigo ao longo do eixo x.
     def update(self, speed):
         self.rect.x = self.rect.x + speed
+
+# Classe do botão de start:
+class Button:
+    def __init__(self, x, y, width, height, foreground_color, background_color, content, font_size):
+        pass
