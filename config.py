@@ -2,6 +2,9 @@
 screen_width = 640
 screen_height = 480
 background_image = "img/background.jpg"
+game_font = "font/Bungee-Regular.ttf"
+game_over_message_position = (screen_width / 2, screen_height / 2)
+
 
 # Configurações do Player.
 player_image = "img/player.png"

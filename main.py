@@ -31,8 +31,9 @@ class Game:
         self.enemy_laser = pygame.sprite.Group()
 
         # Fonte que vai ser usada na tela de fim de jogo.
-        #self.font = pygame.font.Font(pygame.font.get_default_font(), 50)
-        self.font = pygame.font.Font("font/Bungee-Regular.ttf", 32)
+        self.font = pygame.font.Font(game_font, 50)
+        # Atributo pra verificar se o jogo foi encerrado.
+        self.playing = True
 
     # Método que posiciona os inimigos em determinada posição.
     def enemy_position(self, rows, cols, x_distance = 60, y_distance = 50, window_distance = 40):
@@ -102,9 +103,6 @@ class Game:
                 if pygame.sprite.spritecollide(laser, self.player, False):
                     laser.kill()
                     self.lives = self.lives - 1
-                    if self.lives == 0:
-                        pygame.quit()
-                        sys.exit()
 
     # Método pra mostrar as vidas restantes na tela.
     def display_lives(self):
@@ -112,13 +110,34 @@ class Game:
             position = (self.lives_position + (live * (self.lives_img.get_size()[0] + 10)), 5)
             screen.blit(self.lives_img, position)
 
+    # Método pra exibir a mensagem ao fim do jogo.
     def game_over(self):
+        # Mensagem em caso de vitória.
         if not self.enemy.sprites():
-            victory_message = self.font.render("VOCÊ VENCEU!", False, "white")
-            victory_rect = victory_message.get_rect(center = (screen_width/2, screen_height/2))
-            screen.blit(victory_message, victory_rect)
-        #elif self.lives == 0:
-            #print("Você perdeu")
+            message = self.font.render("VOCÊ VENCEU!", False, "green")
+            message_rect = message.get_rect(center = game_over_message_position)
+            screen.blit(background, (0, 0))
+            screen.blit(message, message_rect)
+            # Encerrando o jogo.
+            self.playing = False
+            
+        # Mensagem em caso de derrota.
+        elif self.lives == 0:
+            message = self.font.render("VOCÊ PERDEU!", False, "red")
+            message_rect = message.get_rect(center = game_over_message_position)
+            screen.blit(background, (0, 0))
+            screen.blit(message, message_rect)
+            # Encerrando o jogo.
+            self.playing = False
+
+    # Método que verifica se o jogo ainda está em andamento.
+    def is_playing(self):
+        pygame.display.flip()
+        if self.playing == False:
+            pygame.time.wait(3000)
+            pygame.quit()
+            sys.exit()
+            
 
     # Método que desenha e atualiza todos os grupos de sprites.
     def run(self):
@@ -135,6 +154,8 @@ class Game:
         self.display_lives()
         # Método que mostra a tela de fim de jogo.
         self.game_over()
+        # Verifica se o jogo ainda está em andamento.
+        self.is_playing()
         # Atualizando os sprites.
         self.player.update()
         self.enemy.update(self.enemy_speed)
@@ -164,11 +185,12 @@ if __name__ == "__main__":
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+
             if event.type == enemylaser:
                 game.enemies_shoot()
         
         # Desenhando o fundo com uma cor e adicionando a imagem de fundo.
-        screen.fill((30, 30, 30))
+        screen.fill((15, 15, 15))
         screen.blit(background, (0, 0))
         
         # Desenhando e atualizando os sprites

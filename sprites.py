@@ -1,4 +1,3 @@
-from typing import Any
 import pygame
 from config import *
 
@@ -94,8 +93,3 @@ class Enemy(pygame.sprite.Sprite):
     # Método que atualiza o movimento do inimigo ao longo do eixo x.
     def update(self, speed):
         self.rect.x = self.rect.x + speed
-
-# Classe do botão de start:
-class Button:
-    def __init__(self, x, y, width, height, foreground_color, background_color, content, font_size):
-        pass
