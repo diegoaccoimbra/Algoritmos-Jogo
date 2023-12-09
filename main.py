@@ -136,8 +136,7 @@ class Game:
         if self.playing == False:
             pygame.time.wait(3000)
             pygame.quit()
-            sys.exit()
-            
+            sys.exit()           
 
     # Método que desenha e atualiza todos os grupos de sprites.
     def run(self):
@@ -170,7 +169,7 @@ if __name__ == "__main__":
     screen = pygame.display.set_mode((screen_width, screen_height))
     # Definindo o "frame rate" (quantas vezes o jogo atualiza por segundo).
     clock = pygame.time.Clock()
-    # Instância da classe Game
+    # Instância da classe Game.
     game = Game()
     # Imagem de fundo do jogo.
     background = pygame.image.load(background_image).convert_alpha()
