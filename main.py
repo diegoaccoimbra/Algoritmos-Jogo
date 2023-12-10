@@ -19,7 +19,7 @@ class Game:
         # Sistema de vidas do player.
         self.lives = player_lives
         self.lives_img = pygame.image.load(player_lives_image).convert_alpha()
-        self.lives_position = screen_width - (self.lives_img.get_size()[0] * 2 + 15)
+        self.lives_position = self.lives_img.get_size()[0] * 2 - 60
 
         # Criando um grupo de sprite pras instâncias da classe Enemy.
         self.enemy = pygame.sprite.Group()
@@ -188,8 +188,7 @@ if __name__ == "__main__":
             if event.type == enemylaser:
                 game.enemies_shoot()
         
-        # Desenhando o fundo com uma cor e adicionando a imagem de fundo.
-        screen.fill((15, 15, 15))
+        # Adicionando a imagem de fundo.
         screen.blit(background, (0, 0))
         
         # Desenhando e atualizando os sprites
